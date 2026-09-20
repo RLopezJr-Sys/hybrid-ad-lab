@@ -27,3 +27,12 @@ Successfully installed and verified the core server roles required for the lab e
 - **Print and Document Services**
 - **Web Server (IIS)**
 - **Group Policy Management**
+
+## 4. Administrative Tools Verification
+Verified that core Windows Server administrative tools are installed and accessible following the role deployment.
+
+- **Active Directory Users and Computers (ADUC)**
+- **DNS Manager**
+- **DHCP Console**
+- <img width="942" height="661" alt="AD Up and ready to go" src="https://github.com/user-attachments/assets/61082fc1-b78b-409b-9b55-21a73ce740d6" />
+
