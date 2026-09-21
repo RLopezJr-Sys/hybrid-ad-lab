@@ -66,9 +66,24 @@ To populate the directory and test object management, a new test user account wa
 * Verified the successfully created user account active within the container.
 <img width="707" height="335" alt="user is created" src="https://github.com/user-attachments/assets/05c4502d-1082-42fd-bd50-8481d8711823" />
 
+## 9. Account Management & Support Tasks
+As part of routine Tier 1 help desk operations, user account troubleshooting and maintenance tasks were practiced within Active Directory.
 
+* **Password Resets:** Demonstrated handling user password assistance by right-clicking a user object, selecting **Reset Password**, and enforcing security best practices by requiring the user to change their password at next logon.
+* **Account Unlocks:** Reviewed account lockout status attributes to identify locked accounts on the domain controller and performed manual account unlocks when necessary.
+* **Account Disabling / Enabling:** Examined how disabled accounts appear with specific icons in the directory container and practiced identifying purposeful status changes versus accidental changes.
 
+* ## 10. Security Group Management
+To follow best practices for access control and permissions scaling, Active Directory security groups were established rather than assigning direct permissions to individual user accounts.
 
+* **Group Creation:** Created a dedicated security group named **IT Workers** under the organizational unit structure to manage departmental access.
+* **Member Assignment:** Assigned test user accounts (such as `mike smith`) as members of the security group to demonstrate granular permission control and group-based policy management.
+<img width="1082" height="696" alt="created groups" src="https://github.com/user-attachments/assets/2b34eaba-8864-4859-aaa6-d7c1eff2a22d" />
 
+## 11. User Properties & Attribute Management
+To understand how enterprise applications (such as Microsoft Teams and email routing systems) pull metadata from directory services, user object attributes and raw schema properties were explored.
 
+* **Profile & Organization Metadata:** Configured user telephone numbers, job titles, department descriptions, and reporting managers to support directory integration and organizational hierarchies.
+* **Attribute Editor & Proxy Addresses:** Utilized the advanced **Attribute Editor** tab to view and modify raw directory properties, including setting capital and lowercase proxy addresses (SMTP/smtp) to manage alternate email alias routing.
+* **Object Tracking:** Practiced using global directory search features to locate user objects across multiple branch organizational units regardless of their current placement.
 
