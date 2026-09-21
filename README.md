@@ -60,12 +60,10 @@ To establish a structured and realistic directory hierarchy, custom Organization
 To populate the directory and test object management, a new test user account was created within the `users` sub-OU.
 
 * Configured the user object properties and user logon name within the designated OU path (`lab.local/branch1/users`).
-![New User Wizard Setup]
 <img width="537" height="468" alt="creating a new user under the users OU" src="https://github.com/user-attachments/assets/0824fdcf-a8a9-46be-92d0-a0b5dfeb8ff8" />
 
 
 * Verified the successfully created user account active within the container.
-![Populated Users OU List]
 <img width="707" height="335" alt="user is created" src="https://github.com/user-attachments/assets/05c4502d-1082-42fd-bd50-8481d8711823" />
 
 
