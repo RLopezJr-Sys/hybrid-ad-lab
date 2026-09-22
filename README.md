@@ -87,3 +87,82 @@ To understand how enterprise applications (such as Microsoft Teams and email rou
 * **Attribute Editor & Proxy Addresses:** Utilized the advanced **Attribute Editor** tab to view and modify raw directory properties, including setting capital and lowercase proxy addresses (SMTP/smtp) to manage alternate email alias routing.
 * **Object Tracking:** Practiced using global directory search features to locate user objects across multiple branch organizational units regardless of their current placement.
 
+## 12. Network Configuration & Static IP Assignment
+Configured dedicated static private IP addresses for both virtual machines to ensure stable internal DNS resolution, prevent domain controller communication drops, and avoid IP conflicts.
+
+- **VM1 (Domain Controller):** Configured with a static private IP (`172.16.0.4`).
+  <img width="702" height="238" alt="static ip for vm1" src="https://github.com/user-attachments/assets/5d784319-a68c-4c63-bacf-fdeefeee9c37" />
+- **VM2 (Client Machine):** Configured with a unique static private IP (`172.16.0.5`) to eliminate subnet conflicts.
+  <img width="708" height="224" alt="static ip for vm2" src="https://github.com/user-attachments/assets/de358f7b-b9c1-4fa6-8e17-18b3337ef4f8" />
+
+  ## 13. Domain Controller Promotion & Forest Configuration
+Configured VM1 as the primary domain controller by deploying a new Active Directory forest with the root domain name `lab.local`.
+
+- **Deployment Configuration:** Selected "Add a new forest" and specified the root domain `lab.local`.
+  <img width="946" height="578" alt="adding a new forest into the new vm1" src="https://github.com/user-attachments/assets/352938d5-100c-4f47-8ea6-1841428d7539" />
+
+  ## 14. Organizational Unit & User Account Creation
+Created a structured directory hierarchy inside the `lab.local` domain to organize department users and prepare for Group Policy deployment.
+
+- **OU Hierarchy:** Established a root organizational unit named `Corp` containing department sub-OUs for **IT**, **HR**, and **Sales**.
+- **Test Accounts:** Created individual user accounts within their respective department OUs for testing authentication and RBAC policies.
+  <img width="940" height="555" alt="OUs and new users" src="https://github.com/user-attachments/assets/8db8959f-b5e2-447b-9bce-550f17deec20" />
+
+**Client Network Configuration (VM2):** Configured custom DNS settings on VM2's network interface within Azure, pointing the preferred DNS server to the Domain Controller (`172.16.0.4`) to ensure proper `lab.local` name resolution.
+<img width="1163" height="583" alt="adding vm1s static ip dns settings into vm2" src="https://github.com/user-attachments/assets/855156d2-1d26-4b48-acee-00bc003aa457" />
+
+
+### Step 15: Joining Client Machine (VM2) to the Domain
+- Navigated to **System Properties** > **Computer Name** on VM2 and selected **Change**.
+- Changed domain membership to `lab.local` and authenticated using Domain Admin credentials.
+- Received the *"Welcome to the lab.local domain"* confirmation prompt and restarted the virtual machine to finalize domain enrollment.
+-
+# Azure Active Directory Lab: VNet Isolation & Domain Join Troubleshooting
+
+## Overview
+This project documents the deployment and configuration of an Active Directory lab environment in Microsoft Azure, focusing on overcoming cloud-specific networking boundaries, DNS routing challenges, and successfully executing a Windows client domain join.
+
+---
+
+### Troubleshooting: VNet Isolation & DNS Name Resolution
+
+* **Symptom:** Initial domain join attempts from VM2 to `lab.local` (`172.16.0.4`) failed with "Destination host unreachable" and DNS request timeouts.
+* **Diagnosis:** 
+  1. **Layer-3 VNet Isolation:** Auditing the Azure infrastructure revealed that VM1 and VM2 were initially deployed across isolated Virtual Networks (`vnet-eastus-1` and `vnet-eastus-2`). Because Azure enforces hard layer-3 boundaries between VNets by default, inter-VM traffic was dropped before ever reaching the OS firewall.
+  2. **DNS Resolver Misconfiguration:** After redeploying VM2 into the shared VNet (`vnet-eastus-1`) to restore IP reachability, `nslookup lab.local` still failed because the client machine defaulted to Azure's internal virtual DNS resolver (`168.63.129.16`) instead of querying the Domain Controller directly.
+* **Resolution:** 
+  1. **Network Alignment:** Re-deployed VM2 into `vnet-eastus-1` and the shared subnet (`snet-eastus-1`) to establish successful base IP reachability.
+  2. **Static DNS & Cache Reset:** Configured VM2's IPv4 adapter properties to explicitly point the **Preferred DNS server** to `172.16.0.4` and flushed the local resolver cache via `ipconfig /flushdns`.
+
+**Verification Output:**
+text
+C:\Users\PClabadmin>nslookup lab.local
+Server: UnKnown
+Address: 172.16.0.4
+
+Name: lab.local
+Address: 172.16.0.4
+<img width="607" height="248" alt="resolved issue" src="https://github.com/user-attachments/assets/24b24626-d7cb-4eb4-ab99-0c3ca0aa9d1d"/>
+
+### Phase Final: Successful Domain Join & Verification
+
+#### Authentication & Handshake
+With layer-3 routing established and DNS name resolution successfully pointing to the Domain Controller (`172.16.0.4`), VM2 successfully initiated contact with the Active Directory domain controller. 
+
+* **Credential Prompt:** Entering the domain administrative credentials (`lab\Administrator`) successfully authenticated against `lab.local`.
+* **Result:** VM2 successfully dropped its workgroup membership, joined the Active Directory domain, and returned the confirmation prompt.
+
+<img width="562" height="454" alt="login promt to join domain" src="https://github.com/user-attachments/assets/8ee913b7-f3b7-4393-aa12-1127653aaffa" />
+<img width="329" height="185" alt="login successful" src="https://github.com/user-attachments/assets/149159db-3188-4f53-9303-98ad9da769dc" />
+
+---
+
+### Phase Final: Post-Join System Verification
+
+#### Verification & Confirmation
+Following the post-restart login using domain credentials, opening **System Properties** confirms that VM2 has successfully dropped its workgroup status and established full Active Directory membership.
+
+* **Domain Status:** The system explicitly registers under `lab.local`.
+* **Computer Identity:** The full computer name reflects the domain suffix (`rg-test-machine.lab.local`), proving successful integration.
+
+<img width="501" height="580" alt="confirmed changes" src="https://github.com/user-attachments/assets/f81756b2-4fdb-48a9-b7bb-cb5599086a7c" />
