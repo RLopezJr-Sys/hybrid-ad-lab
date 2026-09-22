@@ -12,6 +12,7 @@ Documenting the deployment and configuration of a hybrid Active Directory enviro
 Configured server roles and features to prepare the virtual machine as a primary domain controller.
 
 * Installed **Active Directory Domain Services** and **DNS Server** roles via Server Manager.
+
   <img width="463" height="282" alt="downloading AD" src="https://github.com/user-attachments/assets/4abc031f-0064-4fec-ad10-efa0e4671547" />
 <img width="977" height="695" alt="adding features" src="https://github.com/user-attachments/assets/7c058476-b094-4d0f-9b38-917b0bbefe0d" />
 <img width="977" height="696" alt="adding more features" src="https://github.com/user-attachments/assets/27e160b2-b491-4b4d-9ba4-e93bac005cd5" />
@@ -34,6 +35,7 @@ Verified that core Windows Server administrative tools are installed and accessi
 - **Active Directory Users and Computers (ADUC)**
 - **DNS Manager**
 - **DHCP Console**
+
 - <img width="942" height="661" alt="AD Up and ready to go" src="https://github.com/user-attachments/assets/61082fc1-b78b-409b-9b55-21a73ce740d6" />
 
 ## 5. Active Directory Domain Controller Promotion
@@ -42,10 +44,12 @@ Promoted the Windows Server instance to a Domain Controller for the lab environm
 - **Deployment Type:** Added a new forest
 - **Root Domain Name:** `lab.local`
 - **Configured DSRM Password and completed prerequisite checks**
+
 - <img width="948" height="701" alt="AD domain controller promotion" src="https://github.com/user-attachments/assets/f1ddb236-8cda-4103-8482-d8fc826a33d6" />
 
 ## 6. Organizational Unit (OU) Structure
 Created a custom top-level Organizational Unit named `branch1` under the `lab.local` domain to organize future network objects and support hybrid cloud synchronization.
+
 <img width="937" height="662" alt="created a new OU and named it branch1" src="https://github.com/user-attachments/assets/b59a3d8c-afb7-4cb5-abc9-96a426dd5ca3" />
 
 ## 7. Configuring Organizational Units (OUs)
@@ -53,17 +57,21 @@ To establish a structured and realistic directory hierarchy, custom Organization
 
 * Created a top-level OU named `branch1` to segregate branch-specific resources.
 * Added sub-OUs inside `branch1` including `users`, `computers`, and `groups` with accidental deletion protection enabled.
+
 * <img width="536" height="466" alt="created new OU under branch1 called users" src="https://github.com/user-attachments/assets/0b15ef06-371d-4930-98ae-4dd109186f42" />
+
 <img width="242" height="167" alt="created other OU&#39;s under branch1" src="https://github.com/user-attachments/assets/7e1d64b1-38a0-4c83-bfa8-74114831a33f" />
 
 ## 8. Creating Test Users
 To populate the directory and test object management, a new test user account was created within the `users` sub-OU.
 
 * Configured the user object properties and user logon name within the designated OU path (`lab.local/branch1/users`).
+
 <img width="537" height="468" alt="creating a new user under the users OU" src="https://github.com/user-attachments/assets/0824fdcf-a8a9-46be-92d0-a0b5dfeb8ff8" />
 
 
 * Verified the successfully created user account active within the container.
+
 <img width="707" height="335" alt="user is created" src="https://github.com/user-attachments/assets/05c4502d-1082-42fd-bd50-8481d8711823" />
 
 ## 9. Account Management & Support Tasks
@@ -78,6 +86,7 @@ To follow best practices for access control and permissions scaling, Active Dire
 
 * **Group Creation:** Created a dedicated security group named **IT Workers** under the organizational unit structure to manage departmental access.
 * **Member Assignment:** Assigned test user accounts (such as `mike smith`) as members of the security group to demonstrate granular permission control and group-based policy management.
+
 <img width="1082" height="696" alt="created groups" src="https://github.com/user-attachments/assets/2b34eaba-8864-4859-aaa6-d7c1eff2a22d" />
 
 ## 11. User Properties & Attribute Management
@@ -91,14 +100,18 @@ To understand how enterprise applications (such as Microsoft Teams and email rou
 Configured dedicated static private IP addresses for both virtual machines to ensure stable internal DNS resolution, prevent domain controller communication drops, and avoid IP conflicts.
 
 - **VM1 (Domain Controller):** Configured with a static private IP (`172.16.0.4`).
+
   <img width="702" height="238" alt="static ip for vm1" src="https://github.com/user-attachments/assets/5d784319-a68c-4c63-bacf-fdeefeee9c37" />
+
 - **VM2 (Client Machine):** Configured with a unique static private IP (`172.16.0.5`) to eliminate subnet conflicts.
+
   <img width="708" height="224" alt="static ip for vm2" src="https://github.com/user-attachments/assets/de358f7b-b9c1-4fa6-8e17-18b3337ef4f8" />
 
   ## 13. Domain Controller Promotion & Forest Configuration
 Configured VM1 as the primary domain controller by deploying a new Active Directory forest with the root domain name `lab.local`.
 
 - **Deployment Configuration:** Selected "Add a new forest" and specified the root domain `lab.local`.
+
   <img width="946" height="578" alt="adding a new forest into the new vm1" src="https://github.com/user-attachments/assets/352938d5-100c-4f47-8ea6-1841428d7539" />
 
   ## 14. Organizational Unit & User Account Creation
@@ -106,9 +119,11 @@ Created a structured directory hierarchy inside the `lab.local` domain to organi
 
 - **OU Hierarchy:** Established a root organizational unit named `Corp` containing department sub-OUs for **IT**, **HR**, and **Sales**.
 - **Test Accounts:** Created individual user accounts within their respective department OUs for testing authentication and RBAC policies.
+
   <img width="940" height="555" alt="OUs and new users" src="https://github.com/user-attachments/assets/8db8959f-b5e2-447b-9bce-550f17deec20" />
 
 **Client Network Configuration (VM2):** Configured custom DNS settings on VM2's network interface within Azure, pointing the preferred DNS server to the Domain Controller (`172.16.0.4`) to ensure proper `lab.local` name resolution.
+
 <img width="1163" height="583" alt="adding vm1s static ip dns settings into vm2" src="https://github.com/user-attachments/assets/855156d2-1d26-4b48-acee-00bc003aa457" />
 
 
@@ -166,3 +181,13 @@ Following the post-restart login using domain credentials, opening **System Prop
 * **Computer Identity:** The full computer name reflects the domain suffix (`rg-test-machine.lab.local`), proving successful integration.
 
 <img width="501" height="580" alt="confirmed changes" src="https://github.com/user-attachments/assets/f81756b2-4fdb-48a9-b7bb-cb5599086a7c" />
+
+
+### Day-2 Operations: Active Directory Recycle Bin
+
+To ensure fault tolerance and protect against accidental deletions of directory objects (such as users, groups, or organizational units), the Active Directory Recycle Bin was enabled on the domain controller. 
+
+* **Verification:** Querying the optional features via PowerShell confirms that the feature is fully active (`EnabledScopes` populated) and registered across the forest.
+  
+<img width="1465" height="493" alt="adding recycle bin with powershell" src="https://github.com/user-attachments/assets/ae377da6-d269-46bd-98ee-d2d1fd4451ad" />
+
